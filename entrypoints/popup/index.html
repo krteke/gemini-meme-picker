@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="manifest.type" content="browser_action" />
+    <meta name="manifest.default_title" content="Gemini Meme Picker" />
     <title>Gemini Meme Picker</title>
-    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
     <main class="popup-root">
         <header class="popup-header">
-            <img class="popup-logo" src="../icons/icon48.png" alt="Gemini Meme Picker" />
+            <img class="popup-logo" src="/icon/48.png" alt="Gemini Meme Picker" />
             <div class="popup-title-group">
                 <h1>Gemini Meme Picker</h1>
                 <p>Google Gemini 网页端原生表情包抽屉</p>
@@ -41,7 +43,7 @@
         <section class="size-preset-card">
             <div class="size-preset-head">
                 <span class="setting-title">表情大小档位</span>
-                <span class="size-summary" id="size-summary">140px / 72px</span>
+                <span class="size-summary" id="size-summary">贴纸 140px / 行内 72px</span>
             </div>
             <div class="size-preset-row" id="size-preset-row">
                 <button type="button" class="size-chip" data-preset="sm">小</button>
@@ -58,6 +60,6 @@
 
         <p class="status-msg" id="status-msg" role="status" aria-live="polite"></p>
     </main>
-    <script src="popup.js"></script>
+    <script type="module" src="./main.js"></script>
 </body>
 </html>

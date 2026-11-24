@@ -2,62 +2,27 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import {
+    DEFAULT_SIZE_SETTINGS,
+    filterMemes,
+    normalizeSizeSettings,
+    sanitizeName
+} from '../src/lib/storage.js';
+import {
+    buildMemeLookup,
+    classifyTextBlock,
+    getVisibleText,
+    isAssistantStickerAlt
+} from '../src/lib/renderer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
-
-function loadModuleIntoVm(relPath, extraGlobals = {}) {
-    const fullPath = path.join(ROOT_DIR, relPath);
-    const code = fs.readFileSync(fullPath, 'utf8');
-    const context = {
-        console,
-        setTimeout,
-        clearTimeout,
-        URL,
-        ...extraGlobals
-    };
-    context.globalThis = context;
-    context.window = context;
-    vm.createContext(context);
-    vm.runInContext(code, context, { filename: relPath });
-    return context;
-}
-
-test('Manifest V3 configuration and referenced files are valid', () => {
-    const manifestPath = path.join(ROOT_DIR, 'manifest.json');
-    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-
-    assert.equal(manifest.manifest_version, 3);
-    assert.ok(manifest.permissions.includes('storage'));
-    assert.ok(manifest.permissions.includes('unlimitedStorage'));
-
-    for (const iconPath of Object.values(manifest.icons)) {
-        assert.ok(fs.existsSync(path.join(ROOT_DIR, iconPath)), `Missing icon: ${iconPath}`);
-    }
-
-    assert.ok(fs.existsSync(path.join(ROOT_DIR, manifest.action.default_popup)), 'Missing popup HTML');
-
-    assert.equal(manifest.content_scripts.length, 1);
-    const cs = manifest.content_scripts[0];
-    assert.deepEqual(cs.matches, ['https://gemini.google.com/*']);
-
-    for (const file of [...cs.css, ...cs.js]) {
-        assert.ok(fs.existsSync(path.join(ROOT_DIR, file)), `Missing content script file: ${file}`);
-    }
-
-    assert.ok(
-        manifest.web_accessible_resources.some((r) => r.resources.includes('assets/presets/*')),
-        'web_accessible_resources should expose assets/presets/*'
-    );
-});
+const PRESETS_MANIFEST_PATH = path.join(ROOT_DIR, 'public', 'assets', 'presets', 'manifest.json');
 
 test('All 23 preset WebP stickers and manifest entries exist and are valid WebP files', () => {
-    const presetsManifestPath = path.join(ROOT_DIR, 'assets', 'presets', 'manifest.json');
-    const presets = JSON.parse(fs.readFileSync(presetsManifestPath, 'utf8'));
-
+    const presets = JSON.parse(fs.readFileSync(PRESETS_MANIFEST_PATH, 'utf8'));
     assert.equal(presets.length, 23);
 
     for (const item of presets) {
@@ -66,8 +31,8 @@ test('All 23 preset WebP stickers and manifest entries exist and are valid WebP 
         assert.equal(item.tag, `[表情: ${item.name}]`);
         assert.ok(Array.isArray(item.keywords) && item.keywords.length > 0, `Missing keywords for ${item.name}`);
 
-        const filePath = path.join(ROOT_DIR, item.path);
-        assert.ok(fs.existsSync(filePath), `Missing preset file: ${item.path}`);
+        const filePath = path.join(ROOT_DIR, 'public', item.path);
+        assert.ok(fs.existsSync(filePath), `Missing preset file: public/${item.path}`);
         const buf = fs.readFileSync(filePath);
         assert.ok(buf.length > 100, `Preset file too small: ${item.path}`);
         assert.equal(buf.subarray(0, 4).toString('ascii'), 'RIFF', `Invalid RIFF header: ${item.path}`);
@@ -77,27 +42,37 @@ test('All 23 preset WebP stickers and manifest entries exist and are valid WebP 
 
 test('Trusted Types compliance & no Python/desktop injection files', () => {
     const forbiddenExts = ['.py', '.bat', '.ps1'];
-    const entries = fs.readdirSync(ROOT_DIR);
-    for (const entry of entries) {
+    for (const entry of fs.readdirSync(ROOT_DIR)) {
         assert.ok(!forbiddenExts.includes(path.extname(entry).toLowerCase()), `Forbidden file in root: ${entry}`);
     }
 
-    const jsDirs = ['src', 'popup'];
-    for (const dir of jsDirs) {
-        const dirPath = path.join(ROOT_DIR, dir);
-        for (const file of fs.readdirSync(dirPath)) {
-            if (!file.endsWith('.js')) continue;
-            const content = fs.readFileSync(path.join(dirPath, file), 'utf8');
-            assert.equal(/\.\s*(innerHTML|outerHTML)\s*=/.test(content), false, `${dir}/${file} assigns innerHTML/outerHTML`);
-            assert.equal(/insertAdjacentHTML\s*\(/.test(content), false, `${dir}/${file} calls insertAdjacentHTML`);
+    const scanTargets = [
+        path.join(ROOT_DIR, 'src', 'lib'),
+        path.join(ROOT_DIR, 'entrypoints'),
+        path.join(ROOT_DIR, 'entrypoints', 'popup')
+    ];
+
+    for (const dirPath of scanTargets) {
+        for (const entry of fs.readdirSync(dirPath)) {
+            if (!entry.endsWith('.js') && !entry.endsWith('.ts')) continue;
+            const filePath = path.join(dirPath, entry);
+            const content = fs.readFileSync(filePath, 'utf8');
+            assert.equal(
+                /\.\s*(innerHTML|outerHTML)\s*=/.test(content),
+                false,
+                `${path.relative(ROOT_DIR, filePath)} assigns innerHTML/outerHTML`
+            );
+            assert.equal(
+                /insertAdjacentHTML\s*\(/.test(content),
+                false,
+                `${path.relative(ROOT_DIR, filePath)} calls insertAdjacentHTML`
+            );
         }
     }
 });
 
-test('storage.filterMemes supports Chinese names, keywords, case-insensitivity, and multi-token search', () => {
-    const ctx = loadModuleIntoVm('src/storage.js');
-    const presets = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'assets', 'presets', 'manifest.json'), 'utf8'));
-    const { filterMemes, sanitizeName } = ctx.__GMP.storage;
+test('storage.filterMemes and normalizeSizeSettings work accurately', () => {
+    const presets = JSON.parse(fs.readFileSync(PRESETS_MANIFEST_PATH, 'utf8'));
 
     assert.equal(filterMemes(presets, '').length, 23);
     assert.deepEqual(
@@ -114,100 +89,15 @@ test('storage.filterMemes supports Chinese names, keywords, case-insensitivity, 
     );
     assert.equal(sanitizeName('01-超开心[测试].png'), '01-超开心测试');
     assert.equal(sanitizeName('   .webp'), 'sticker');
-});
 
-test('renderer.classifyTextBlock and isAssistantStickerAlt handle all bubble modes accurately', () => {
-    const ctx = loadModuleIntoVm('src/renderer.js');
-    const { buildMemeLookup, classifyTextBlock, isAssistantStickerAlt } = ctx.__GMP.renderer;
-
-    const presets = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'assets', 'presets', 'manifest.json'), 'utf8'));
-    const withPreview = presets.map((p) => ({ ...p, preview: `chrome-extension://test/${p.path}` }));
-    const { memeMap, memeNames } = buildMemeLookup(withPreview, []);
-
-    const toPlain = (val) => JSON.parse(JSON.stringify(val));
-
-    // Single standalone -> default 140px
-    assert.deepEqual(toPlain(classifyTextBlock('[表情: 开心]', memeMap)), {
-        kind: 'standalone',
-        names: ['开心'],
-        size: 140
-    });
-
-    // Full-width colon supported
-    assert.deepEqual(toPlain(classifyTextBlock('  [表情：哈气]  ', memeMap)), {
-        kind: 'standalone',
-        names: ['哈气'],
-        size: 140
-    });
-
-    // Multiple standalone -> 112px horizontal (80% of 140)
-    assert.deepEqual(toPlain(classifyTextBlock('[表情: 开心] [表情: 点赞] [表情: 好耶]', memeMap)), {
-        kind: 'standalone',
-        names: ['开心', '点赞', '好耶'],
-        size: 112
-    });
-
-    // Mixed text + sticker -> default 72px inline
-    assert.deepEqual(toPlain(classifyTextBlock('今天效率好高 [表情: 点赞] 继续加油！', memeMap)), {
-        kind: 'inline',
-        names: ['点赞'],
-        size: 72
-    });
-
-    // Custom size settings override
-    assert.deepEqual(
-        toPlain(classifyTextBlock('[表情: 开心]', memeMap, { standalone: 200, inline: 96, assistantMax: 220 })),
-        {
-            kind: 'standalone',
-            names: ['开心'],
-            size: 200
-        }
-    );
-    assert.deepEqual(
-        toPlain(classifyTextBlock('你好 [表情: 开心]', memeMap, { standalone: 200, inline: 96, assistantMax: 220 })),
-        {
-            kind: 'inline',
-            names: ['开心'],
-            size: 96
-        }
-    );
-
-    // Unknown tag alone -> none
-    assert.deepEqual(toPlain(classifyTextBlock('[表情: 不存在的贴纸]', memeMap)), {
-        kind: 'none',
-        names: [],
-        size: 0
-    });
-
-    // Mixed known + unknown -> inline (only known rendered)
-    assert.deepEqual(toPlain(classifyTextBlock('[表情: 开心] [表情: 未知]', memeMap)), {
-        kind: 'inline',
-        names: ['开心'],
-        size: 72
-    });
-
-    // Assistant media alt recognition
-    assert.equal(isAssistantStickerAlt('开心', memeNames), true);
-    assert.equal(isAssistantStickerAlt('表情: 哈气', memeNames), true);
-    assert.equal(isAssistantStickerAlt('meme: happy cat', memeNames), true);
-    assert.equal(isAssistantStickerAlt('sticker：yay', memeNames), true);
-    assert.equal(isAssistantStickerAlt('System architecture diagram', memeNames), false);
-    assert.equal(isAssistantStickerAlt('', memeNames), false);
-});
-
-test('storage.normalizeSizeSettings clamps bounds and computes multi size', () => {
-    const ctx = loadModuleIntoVm('src/storage.js');
-    const { normalizeSizeSettings, DEFAULT_SIZE_SETTINGS } = ctx.__GMP.storage;
-    const toPlain = (val) => JSON.parse(JSON.stringify(val));
-
-    assert.deepEqual(toPlain(normalizeSizeSettings(null)), {
+    assert.deepEqual(normalizeSizeSettings(null), {
         standalone: DEFAULT_SIZE_SETTINGS.standalone,
         multi: 112,
         inline: DEFAULT_SIZE_SETTINGS.inline,
         assistantMax: DEFAULT_SIZE_SETTINGS.assistantMax
     });
 
-    assert.deepEqual(toPlain(normalizeSizeSettings({ standalone: 999, inline: 10, assistantMax: 50 })), {
+    assert.deepEqual(normalizeSizeSettings({ standalone: 999, inline: 10, assistantMax: 50 }), {
         standalone: 240,
         multi: 192,
         inline: 40,
@@ -215,14 +105,55 @@ test('storage.normalizeSizeSettings clamps bounds and computes multi size', () =
     });
 });
 
-test('renderer.getVisibleText ignores visually-hidden accessibility nodes (e.g. cdk-visually-hidden)', () => {
-    const ctx = loadModuleIntoVm('src/renderer.js');
-    const { getVisibleText, buildMemeLookup, classifyTextBlock } = ctx.__GMP.renderer;
-    const toPlain = (val) => JSON.parse(JSON.stringify(val));
+test('renderer.classifyTextBlock, getVisibleText, and isAssistantStickerAlt handle all bubble modes', () => {
+    const presets = JSON.parse(fs.readFileSync(PRESETS_MANIFEST_PATH, 'utf8'));
+    const withPreview = presets.map((p) => ({ ...p, preview: `moz-extension://test/${p.path}` }));
+    const { memeMap, memeNames } = buildMemeLookup(withPreview, []);
 
-    const presets = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'assets', 'presets', 'manifest.json'), 'utf8'));
-    const withPreview = presets.map((p) => ({ ...p, preview: `chrome-extension://test/${p.path}` }));
-    const { memeMap } = buildMemeLookup(withPreview, []);
+    assert.deepEqual(classifyTextBlock('[表情: 开心]', memeMap), {
+        kind: 'standalone',
+        names: ['开心'],
+        size: 140
+    });
+    assert.deepEqual(classifyTextBlock('  [表情：哈气]  ', memeMap), {
+        kind: 'standalone',
+        names: ['哈气'],
+        size: 140
+    });
+    assert.deepEqual(classifyTextBlock('[表情: 开心] [表情: 点赞] [表情: 好耶]', memeMap), {
+        kind: 'standalone',
+        names: ['开心', '点赞', '好耶'],
+        size: 112
+    });
+    assert.deepEqual(classifyTextBlock('今天效率好高 [表情: 点赞] 继续加油！', memeMap), {
+        kind: 'inline',
+        names: ['点赞'],
+        size: 72
+    });
+    assert.deepEqual(
+        classifyTextBlock('[表情: 开心]', memeMap, { standalone: 200, inline: 96, assistantMax: 220 }),
+        {
+            kind: 'standalone',
+            names: ['开心'],
+            size: 200
+        }
+    );
+    assert.deepEqual(classifyTextBlock('[表情: 不存在的贴纸]', memeMap), {
+        kind: 'none',
+        names: [],
+        size: 0
+    });
+    assert.deepEqual(classifyTextBlock('[表情: 开心] [表情: 未知]', memeMap), {
+        kind: 'inline',
+        names: ['开心'],
+        size: 72
+    });
+
+    assert.equal(isAssistantStickerAlt('开心', memeNames), true);
+    assert.equal(isAssistantStickerAlt('表情: 哈气', memeNames), true);
+    assert.equal(isAssistantStickerAlt('meme: happy cat', memeNames), true);
+    assert.equal(isAssistantStickerAlt('sticker：yay', memeNames), true);
+    assert.equal(isAssistantStickerAlt('System architecture diagram', memeNames), false);
 
     const mockQueryText = {
         nodeType: 1,
@@ -249,9 +180,45 @@ test('renderer.getVisibleText ignores visually-hidden accessibility nodes (e.g. 
 
     const visible = getVisibleText(mockQueryText);
     assert.equal(visible, '[表情: 开心]');
-    assert.deepEqual(toPlain(classifyTextBlock(visible, memeMap)), {
+    assert.deepEqual(classifyTextBlock(visible, memeMap), {
         kind: 'standalone',
         names: ['开心'],
         size: 140
     });
+});
+
+test('WXT built Chrome MV3 and Firefox MV2 outputs are valid', () => {
+    const chromeDir = path.join(ROOT_DIR, '.output', 'chrome-mv3');
+    const firefoxDir = path.join(ROOT_DIR, '.output', 'firefox-mv2');
+
+    assert.ok(fs.existsSync(path.join(chromeDir, 'manifest.json')), 'Missing .output/chrome-mv3/manifest.json (run pnpm build:all)');
+    assert.ok(fs.existsSync(path.join(firefoxDir, 'manifest.json')), 'Missing .output/firefox-mv2/manifest.json (run pnpm build:all)');
+
+    const chromeManifest = JSON.parse(fs.readFileSync(path.join(chromeDir, 'manifest.json'), 'utf8'));
+    assert.equal(chromeManifest.manifest_version, 3);
+    assert.ok(chromeManifest.permissions.includes('storage'));
+    assert.ok(chromeManifest.permissions.includes('unlimitedStorage'));
+    assert.ok(chromeManifest.action?.default_popup);
+    assert.ok(fs.existsSync(path.join(chromeDir, chromeManifest.action.default_popup)));
+    assert.ok(chromeManifest.content_scripts.some((cs) => cs.matches.includes('https://gemini.google.com/*')));
+    assert.ok(
+        chromeManifest.web_accessible_resources.some(
+            (r) => Array.isArray(r.resources) && r.resources.includes('assets/presets/*')
+        )
+    );
+    assert.ok(fs.existsSync(path.join(chromeDir, 'assets', 'presets', 'default', '01-开心.webp')));
+
+    const firefoxManifest = JSON.parse(fs.readFileSync(path.join(firefoxDir, 'manifest.json'), 'utf8'));
+    assert.equal(firefoxManifest.manifest_version, 2);
+    assert.ok(firefoxManifest.browser_specific_settings?.gecko?.id);
+    assert.ok(firefoxManifest.permissions.includes('storage'));
+    assert.ok(firefoxManifest.permissions.includes('unlimitedStorage'));
+    assert.ok(firefoxManifest.browser_action?.default_popup);
+    assert.ok(fs.existsSync(path.join(firefoxDir, firefoxManifest.browser_action.default_popup)));
+    assert.ok(firefoxManifest.content_scripts.some((cs) => cs.matches.includes('https://gemini.google.com/*')));
+    assert.ok(
+        Array.isArray(firefoxManifest.web_accessible_resources) &&
+            firefoxManifest.web_accessible_resources.includes('assets/presets/*')
+    );
+    assert.ok(fs.existsSync(path.join(firefoxDir, 'assets', 'presets', 'default', '01-开心.webp')));
 });

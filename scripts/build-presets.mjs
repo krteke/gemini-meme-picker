@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
-const PRESETS_DIR = path.join(ROOT_DIR, 'assets', 'presets', 'default');
-const MANIFEST_PATH = path.join(ROOT_DIR, 'assets', 'presets', 'manifest.json');
+const PRESETS_DIR = path.join(ROOT_DIR, 'public', 'assets', 'presets', 'default');
+const MANIFEST_PATH = path.join(ROOT_DIR, 'public', 'assets', 'presets', 'manifest.json');
 
 const VALID_EXTS = new Set(['.webp', '.png', '.jpg', '.jpeg', '.gif']);
 

@@ -1,9 +1,21 @@
 {
   "name": "gemini-meme-picker",
   "version": "1.0.0",
-  "description": "Native meme & sticker drawer browser extension for Google Gemini Web.",
+  "type": "module",
+  "private": true,
+  "description": "Cross-browser (Chrome & Firefox) native meme & sticker drawer extension for Google Gemini Web.",
   "license": "MIT",
+  "packageManager": "pnpm@12.4.1",
   "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "build:firefox-mv3": "wxt build -b firefox --mv3",
+    "build:all": "wxt build && wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "postinstall": "wxt prepare",
     "presets:sync": "node scripts/build-presets.mjs",
     "test": "node --test tests/*.test.mjs"
   },
@@ -11,7 +23,11 @@
     "gemini",
     "meme",
     "sticker",
+    "wxt",
     "chrome-extension",
-    "manifest-v3"
-  ]
+    "firefox-addon"
+  ],
+  "devDependencies": {
+    "wxt": "^0.21.5"
+  }
 }
