@@ -1,7 +1,18 @@
 {
   "addons": {
     "gemini-meme-picker@krteke.github.io": {
-      "updates": []
+      "updates": [
+        {
+          "version": "1.0.1",
+          "update_link": "https://github.com/krteke/gemini-meme-picker/releases/download/v1.0.1/gemini-meme-picker-1.0.1-firefox.xpi",
+          "update_hash": "sha512:ec97e6b2478663afa27420fba3a9ff923a3311821b112d54a41c93e9db66575bc597a7920815160072be28a953f4389f202289379c4ab9780c7fb505d4038c59",
+          "applications": {
+            "gecko": {
+              "strict_min_version": "109.0"
+            }
+          }
+        }
+      ]
     }
   }
 }
