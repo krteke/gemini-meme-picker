@@ -1,4 +1,5 @@
 import { defineConfig } from 'wxt';
+import { FIREFOX_META } from './scripts/firefox-meta.mjs';
 
 export default defineConfig({
   manifest: ({ browser, manifestVersion }) => {
@@ -29,8 +30,9 @@ export default defineConfig({
         ...baseManifest,
         browser_specific_settings: {
           gecko: {
-            id: 'gemini-meme-picker@gemini-meme-picker.dev',
-            strict_min_version: '109.0',
+            id: FIREFOX_META.addonId,
+            strict_min_version: FIREFOX_META.strictMinVersion,
+            update_url: FIREFOX_META.updateUrl,
             data_collection_permissions: {
               required: ['none'],
             },

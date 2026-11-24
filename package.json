@@ -15,6 +15,9 @@
     "build:all": "wxt build && wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "lint:firefox": "web-ext lint --self-hosted --source-dir=.output/firefox-mv2",
+    "sign:firefox": "web-ext sign --source-dir=.output/firefox-mv2 --artifacts-dir=.output/web-ext-artifacts --channel=unlisted",
+    "updates:generate": "node scripts/generate-updates-json.mjs",
     "postinstall": "wxt prepare",
     "presets:sync": "node scripts/build-presets.mjs",
     "test": "node --test tests/*.test.mjs"
@@ -28,6 +31,7 @@
     "firefox-addon"
   ],
   "devDependencies": {
+    "web-ext": "^10.8.0",
     "wxt": "^0.21.5"
   }
 }

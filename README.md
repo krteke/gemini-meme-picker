@@ -41,15 +41,21 @@ pnpm build:all       # 同时构建 Chrome (.output/chrome-mv3) 与 Firefox (.ou
 ### 2. 在浏览器中加载
 
 #### Chrome / Edge / Brave
-1. 打开扩展管理页面（`chrome://extensions/` 或 `edge://extensions/`），开启右上角 **开发者模式（Developer mode）**。
-2. 点击 **加载已解压的扩展程序（Load unpacked）**，选择 `.output/chrome-mv3/` 目录。
-3. 打开或刷新 [Google Gemini](https://gemini.google.com/app) 即可使用。
+1. **方式一：直接下载 Release 打包产物（推荐，无需本地 `pnpm build`）**：
+   - 从 GitHub Releases 下载最新 `gemini-meme-picker-<version>-chrome.zip` 并解压到固定目录。
+   - 打开 `chrome://extensions/`（或 `edge://extensions/`），开启右上角 **开发者模式（Developer mode）**。
+   - 点击 **加载已解压的扩展程序（Load unpacked）**，选择解压后的目录即可。
+2. **方式二：本地源码构建（开发调试）**：
+   - 执行 `pnpm zip`（打包 `.zip`）或 `pnpm build`（生成 `.output/chrome-mv3/`），再加载 `.output/chrome-mv3/` 目录。
+   - 打开或刷新 [Google Gemini](https://gemini.google.com/app) 即可使用。
 
 #### Firefox
-1. 打开 `about:debugging#/runtime/this-firefox`。
-2. 点击 **临时载入附加组件（Load Temporary Add-on...）**。
-3. 选择 `.output/firefox-mv2/manifest.json`（或使用 `pnpm dev:firefox` 自动拉起调试实例）。
-4. 打开或刷新 [Google Gemini](https://gemini.google.com/app) 即可使用。
+1. **方式一：直接安装已签名的 `.xpi`（推荐，支持自动更新）**：
+   - 从 GitHub Releases 下载最新 `gemini-meme-picker-<version>-firefox.xpi`，直接拖入 Firefox 窗口确认安装即可，后续新版本发布时 Firefox 会通过 `updates.json` 自动检查并更新。
+2. **方式二：临时加载本地构建产物（开发调试）**：
+   - 打开 `about:debugging#/runtime/this-firefox`，点击 **临时载入附加组件（Load Temporary Add-on...）**。
+   - 选择 `.output/firefox-mv2/manifest.json`（或使用 `pnpm dev:firefox` 自动拉起调试实例）。
+   - 打开或刷新 [Google Gemini](https://gemini.google.com/app) 即可使用。
 
 ---
 
