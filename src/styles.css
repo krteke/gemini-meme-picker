@@ -1,0 +1,681 @@
+/* Gemini Meme Picker - Material You Adaptive Styles */
+
+#gmp-trigger-btn {
+    --gmp-btn-fg: #444746;
+    --gmp-btn-hover-bg: rgba(68, 71, 70, 0.08);
+    --gmp-btn-active-bg: rgba(26, 115, 232, 0.14);
+    --gmp-btn-active-fg: #1a73e8;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--gmp-btn-fg);
+    cursor: pointer;
+    padding: 0;
+    margin: 0 2px;
+    transition: background-color 0.16s ease, color 0.16s ease, transform 0.12s ease;
+    vertical-align: middle;
+}
+
+#gmp-trigger-btn[data-theme="dark"] {
+    --gmp-btn-fg: #c4c7c5;
+    --gmp-btn-hover-bg: rgba(227, 227, 227, 0.1);
+    --gmp-btn-active-bg: rgba(168, 199, 250, 0.18);
+    --gmp-btn-active-fg: #a8c7fa;
+}
+
+#gmp-trigger-btn:hover {
+    background-color: var(--gmp-btn-hover-bg);
+    color: var(--gmp-btn-active-fg);
+}
+
+#gmp-trigger-btn.active {
+    background-color: var(--gmp-btn-active-bg);
+    color: var(--gmp-btn-active-fg);
+}
+
+#gmp-trigger-btn:active {
+    transform: scale(0.94);
+}
+
+/* Popover Container */
+#gmp-meme-picker {
+    --gmp-bg: rgba(255, 255, 255, 0.96);
+    --gmp-menu-bg: rgba(255, 255, 255, 0.99);
+    --gmp-fg: #1f1f1f;
+    --gmp-muted: #5f6368;
+    --gmp-border: rgba(0, 0, 0, 0.1);
+    --gmp-surface: rgba(0, 0, 0, 0.04);
+    --gmp-surface-hover: rgba(26, 115, 232, 0.09);
+    --gmp-bar-bg: rgba(240, 244, 249, 0.85);
+    --gmp-accent: #1a73e8;
+    --gmp-accent-soft: rgba(26, 115, 232, 0.12);
+    --gmp-accent-border: rgba(26, 115, 232, 0.35);
+    --gmp-shadow: 0 18px 44px -8px rgba(0, 0, 0, 0.22), 0 4px 16px rgba(0, 0, 0, 0.08);
+    --gmp-scroll: rgba(0, 0, 0, 0.18);
+
+    position: fixed;
+    z-index: 2147483000;
+    width: 436px;
+    max-width: calc(100vw - 24px);
+    background: var(--gmp-bg);
+    color: var(--gmp-fg);
+    border: 1px solid var(--gmp-border);
+    border-radius: 18px;
+    box-shadow: var(--gmp-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: "Google Sans", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    user-select: none;
+    box-sizing: border-box;
+    animation: gmpFadeIn 0.14s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#gmp-meme-picker[data-theme="dark"] {
+    --gmp-bg: rgba(30, 31, 32, 0.96);
+    --gmp-menu-bg: rgba(36, 37, 40, 0.99);
+    --gmp-fg: #e3e3e3;
+    --gmp-muted: #9aa0a6;
+    --gmp-border: rgba(255, 255, 255, 0.12);
+    --gmp-surface: rgba(255, 255, 255, 0.06);
+    --gmp-surface-hover: rgba(168, 199, 250, 0.14);
+    --gmp-bar-bg: rgba(19, 19, 20, 0.65);
+    --gmp-accent: #a8c7fa;
+    --gmp-accent-soft: rgba(168, 199, 250, 0.16);
+    --gmp-accent-border: rgba(168, 199, 250, 0.38);
+    --gmp-shadow: 0 22px 50px -8px rgba(0, 0, 0, 0.65), 0 0 24px rgba(138, 180, 248, 0.12);
+    --gmp-scroll: rgba(255, 255, 255, 0.22);
+}
+
+#gmp-meme-picker *,
+#gmp-meme-picker *::before,
+#gmp-meme-picker *::after {
+    box-sizing: border-box;
+}
+
+@keyframes gmpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Top bar */
+.gmp-topbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: var(--gmp-bar-bg);
+    border-bottom: 1px solid var(--gmp-border);
+}
+
+.gmp-search-box {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.gmp-search-icon {
+    position: absolute;
+    left: 9px;
+    display: inline-flex;
+    color: var(--gmp-muted);
+    pointer-events: none;
+}
+
+.gmp-search-input {
+    width: 100%;
+    height: 32px;
+    padding: 0 26px 0 28px;
+    border-radius: 10px;
+    border: 1px solid var(--gmp-border);
+    background: var(--gmp-surface);
+    color: var(--gmp-fg);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.gmp-search-input::placeholder {
+    color: var(--gmp-muted);
+}
+
+.gmp-search-input:focus {
+    border-color: var(--gmp-accent);
+    background: var(--gmp-surface-hover);
+}
+
+.gmp-search-clear {
+    position: absolute;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--gmp-muted);
+    font-size: 11px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.gmp-search-clear[hidden] {
+    display: none;
+}
+
+.gmp-search-clear:hover {
+    background: var(--gmp-surface);
+    color: var(--gmp-fg);
+}
+
+.gmp-counter {
+    font-size: 11px;
+    color: var(--gmp-muted);
+    white-space: nowrap;
+}
+
+.gmp-btn-import {
+    height: 28px;
+    padding: 0 9px;
+    border-radius: 8px;
+    border: 1px solid var(--gmp-accent-border);
+    background: var(--gmp-accent-soft);
+    color: var(--gmp-accent);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.gmp-btn-import:hover {
+    opacity: 0.9;
+}
+
+.gmp-btn-import:active {
+    transform: scale(0.97);
+}
+
+.gmp-btn-settings,
+.gmp-btn-close {
+    width: 28px;
+    height: 28px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--gmp-muted);
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.gmp-btn-settings:hover,
+.gmp-btn-close:hover {
+    background: var(--gmp-surface);
+    color: var(--gmp-fg);
+}
+
+.gmp-btn-settings.active {
+    background: var(--gmp-accent-soft);
+    border-color: var(--gmp-accent-border);
+    color: var(--gmp-accent);
+}
+
+/* Settings Dropdown Menu */
+.gmp-settings-menu {
+    position: absolute;
+    top: 52px;
+    right: 12px;
+    width: 276px;
+    max-width: calc(100% - 24px);
+    padding: 12px;
+    background: var(--gmp-menu-bg);
+    border: 1px solid var(--gmp-border);
+    border-radius: 14px;
+    box-shadow: var(--gmp-shadow);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: gmpFadeIn 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gmp-settings-menu[hidden] {
+    display: none;
+}
+
+.gmp-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gmp-settings-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gmp-fg);
+}
+
+.gmp-settings-reset {
+    border: none;
+    background: transparent;
+    color: var(--gmp-accent);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.gmp-settings-reset:hover {
+    background: var(--gmp-accent-soft);
+}
+
+.gmp-size-presets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.gmp-size-preset-btn {
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid var(--gmp-border);
+    background: var(--gmp-surface);
+    color: var(--gmp-fg);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.14s ease;
+}
+
+.gmp-size-preset-btn:hover:not(.active) {
+    background: var(--gmp-surface-hover);
+}
+
+.gmp-size-preset-btn.active {
+    background: var(--gmp-accent-soft);
+    border-color: var(--gmp-accent-border);
+    color: var(--gmp-accent);
+    font-weight: 600;
+}
+
+.gmp-size-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.gmp-size-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.gmp-size-label-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--gmp-muted);
+}
+
+.gmp-size-value {
+    color: var(--gmp-fg);
+    font-variant-numeric: tabular-nums;
+}
+
+.gmp-size-slider {
+    width: 100%;
+    height: 4px;
+    accent-color: var(--gmp-accent);
+    cursor: pointer;
+    margin: 2px 0;
+}
+
+/* Grid Viewport (5-column compact grid) */
+.gmp-grid-viewport {
+    max-height: 296px;
+    min-height: 176px;
+    overflow-y: auto;
+    padding: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gmp-scroll) transparent;
+}
+
+.gmp-grid-viewport::-webkit-scrollbar {
+    width: 6px;
+}
+
+.gmp-grid-viewport::-webkit-scrollbar-thumb {
+    background: var(--gmp-scroll);
+    border-radius: 999px;
+}
+
+.gmp-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+.gmp-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px 5px;
+    background: var(--gmp-surface);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.14s ease, background-color 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+    min-width: 0;
+    outline: none;
+}
+
+.gmp-card:hover,
+.gmp-card:focus-visible {
+    background: var(--gmp-surface-hover);
+    border-color: var(--gmp-accent-border);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+}
+
+.gmp-card:active {
+    transform: scale(0.96);
+}
+
+.gmp-card-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gmp-card-thumb img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+.gmp-card-label {
+    width: 100%;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--gmp-muted);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gmp-rename-input {
+    width: 100%;
+    margin-top: 3px;
+    padding: 1px 4px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: 1px solid var(--gmp-accent);
+    background: var(--gmp-bg);
+    color: var(--gmp-fg);
+    outline: none;
+    text-align: center;
+}
+
+.gmp-card-actions {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    display: none;
+    gap: 3px;
+}
+
+.gmp-card:hover .gmp-card-actions,
+.gmp-card:focus-within .gmp-card-actions {
+    display: flex;
+}
+
+.gmp-card-action {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.gmp-card-rename {
+    background: rgba(26, 115, 232, 0.88);
+}
+
+.gmp-card-delete {
+    background: rgba(220, 38, 38, 0.88);
+}
+
+.gmp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 150px;
+    padding: 20px 12px;
+    text-align: center;
+    color: var(--gmp-muted);
+    font-size: 12px;
+}
+
+.gmp-empty-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--gmp-accent-border);
+    background: var(--gmp-accent-soft);
+    color: var(--gmp-accent);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Drag & drop overlay */
+.gmp-drop-overlay {
+    display: none;
+    position: absolute;
+    inset: 48px 10px 44px;
+    border-radius: 12px;
+    border: 2px dashed var(--gmp-accent);
+    background: var(--gmp-bg);
+    color: var(--gmp-accent);
+    font-weight: 600;
+    font-size: 13px;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+#gmp-meme-picker.is-dragging .gmp-drop-overlay {
+    display: flex;
+}
+
+/* Toast notification */
+.gmp-toast {
+    display: none;
+    padding: 4px 12px;
+    font-size: 11px;
+    text-align: center;
+    color: var(--gmp-accent);
+    background: var(--gmp-accent-soft);
+    border-top: 1px solid var(--gmp-border);
+}
+
+.gmp-toast.visible {
+    display: block;
+}
+
+/* Bottom bar */
+.gmp-bottombar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--gmp-bar-bg);
+    border-top: 1px solid var(--gmp-border);
+    font-size: 11px;
+}
+
+.gmp-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gmp-tab {
+    padding: 4px 9px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--gmp-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.14s ease;
+}
+
+.gmp-tab:hover:not(.active) {
+    background: var(--gmp-surface);
+    color: var(--gmp-fg);
+}
+
+.gmp-tab.active {
+    background: var(--gmp-accent-soft);
+    border-color: var(--gmp-accent-border);
+    color: var(--gmp-accent);
+    font-weight: 600;
+}
+
+.gmp-autosend-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--gmp-fg);
+    cursor: pointer;
+}
+
+.gmp-autosend-toggle input {
+    accent-color: var(--gmp-accent);
+    cursor: pointer;
+}
+
+/* =========================================================
+ * Adaptive Chat Bubble & Sticker Rendering (CSS Variable Driven)
+ * ========================================================= */
+
+.gmp-sticker-only-bubble {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 2px 0 !important;
+}
+
+.gmp-standalone-stickers {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 2px 0 !important;
+}
+
+.gmp-standalone-right {
+    justify-content: flex-end !important;
+}
+
+.gmp-standalone-left {
+    justify-content: flex-start !important;
+}
+
+.gmp-sticker-img {
+    object-fit: contain !important;
+    border-radius: 12px !important;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.25)) !important;
+}
+
+.gmp-sticker-standalone {
+    display: block !important;
+    max-width: none !important;
+    max-height: none !important;
+}
+
+.gmp-sticker-standalone-single {
+    width: var(--gmp-size-standalone, 140px) !important;
+    height: var(--gmp-size-standalone, 140px) !important;
+}
+
+.gmp-sticker-standalone-multi {
+    width: var(--gmp-size-multi, 112px) !important;
+    height: var(--gmp-size-multi, 112px) !important;
+}
+
+.gmp-sticker-inline {
+    display: inline-block !important;
+    width: var(--gmp-size-inline, 72px) !important;
+    height: var(--gmp-size-inline, 72px) !important;
+    vertical-align: middle !important;
+    margin: 0 4px !important;
+    border-radius: 10px !important;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.22)) !important;
+}
+
+/* Assistant media constraint */
+.gmp-assistant-sticker-wrap {
+    width: fit-content !important;
+    max-width: var(--gmp-size-assistant-max, 160px) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.gmp-assistant-sticker-img {
+    max-width: var(--gmp-size-assistant-max, 160px) !important;
+    max-height: var(--gmp-size-assistant-max, 160px) !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 12px !important;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28)) !important;
+}

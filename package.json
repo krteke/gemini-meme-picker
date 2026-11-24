@@ -1,0 +1,17 @@
+{
+  "name": "gemini-meme-picker",
+  "version": "1.0.0",
+  "description": "Native meme & sticker drawer browser extension for Google Gemini Web.",
+  "license": "MIT",
+  "scripts": {
+    "presets:sync": "node scripts/build-presets.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "keywords": [
+    "gemini",
+    "meme",
+    "sticker",
+    "chrome-extension",
+    "manifest-v3"
+  ]
+}

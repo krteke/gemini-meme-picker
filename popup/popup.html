@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gemini Meme Picker</title>
+    <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+    <main class="popup-root">
+        <header class="popup-header">
+            <img class="popup-logo" src="../icons/icon48.png" alt="Gemini Meme Picker" />
+            <div class="popup-title-group">
+                <h1>Gemini Meme Picker</h1>
+                <p>Google Gemini 网页端原生表情包抽屉</p>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">默认表情</span>
+                <strong class="stat-value" id="preset-count">--</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">我的收藏</span>
+                <strong class="stat-value" id="custom-count">--</strong>
+            </div>
+        </section>
+
+        <section class="setting-row">
+            <div class="setting-text">
+                <span class="setting-title">点击直接发送</span>
+                <span class="setting-desc">关闭后点击仅插入文本框，按住 Shift 可临时切换</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="autosend-toggle" checked />
+                <span class="slider"></span>
+            </label>
+        </section>
+
+        <section class="size-preset-card">
+            <div class="size-preset-head">
+                <span class="setting-title">表情大小档位</span>
+                <span class="size-summary" id="size-summary">140px / 72px</span>
+            </div>
+            <div class="size-preset-row" id="size-preset-row">
+                <button type="button" class="size-chip" data-preset="sm">小</button>
+                <button type="button" class="size-chip" data-preset="md">中</button>
+                <button type="button" class="size-chip" data-preset="lg">大</button>
+                <button type="button" class="size-chip" data-preset="xl">超大</button>
+            </div>
+        </section>
+
+        <section class="actions">
+            <button type="button" class="btn btn-primary" id="open-gemini-btn">打开 Gemini 网页版</button>
+            <button type="button" class="btn btn-secondary" id="copy-prompt-btn">复制双向互动人设指令</button>
+        </section>
+
+        <p class="status-msg" id="status-msg" role="status" aria-live="polite"></p>
+    </main>
+    <script src="popup.js"></script>
+</body>
+</html>

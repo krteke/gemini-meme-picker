@@ -1,0 +1,374 @@
+[
+  {
+    "id": "01",
+    "name": "开心",
+    "filename": "01-开心.webp",
+    "path": "assets/presets/default/01-开心.webp",
+    "tag": "[表情: 开心]",
+    "keywords": [
+      "happy",
+      "smile",
+      "joy",
+      "kaixin",
+      "高兴",
+      "微笑",
+      "笑",
+      "乐"
+    ]
+  },
+  {
+    "id": "02",
+    "name": "早安",
+    "filename": "02-早安.webp",
+    "path": "assets/presets/default/02-早安.webp",
+    "tag": "[表情: 早安]",
+    "keywords": [
+      "morning",
+      "good morning",
+      "gm",
+      "zaoan",
+      "早上好",
+      "早",
+      "问候"
+    ]
+  },
+  {
+    "id": "03",
+    "name": "晚安",
+    "filename": "03-晚安.webp",
+    "path": "assets/presets/default/03-晚安.webp",
+    "tag": "[表情: 晚安]",
+    "keywords": [
+      "night",
+      "good night",
+      "gn",
+      "wanan",
+      "睡觉",
+      "好梦",
+      "晚"
+    ]
+  },
+  {
+    "id": "04",
+    "name": "收到",
+    "filename": "04-收到.webp",
+    "path": "assets/presets/default/04-收到.webp",
+    "tag": "[表情: 收到]",
+    "keywords": [
+      "roger",
+      "ack",
+      "ok",
+      "copy",
+      "shoudao",
+      "明白",
+      "了解",
+      "好的"
+    ]
+  },
+  {
+    "id": "05",
+    "name": "谢谢",
+    "filename": "05-谢谢.webp",
+    "path": "assets/presets/default/05-谢谢.webp",
+    "tag": "[表情: 谢谢]",
+    "keywords": [
+      "thanks",
+      "thank you",
+      "thx",
+      "xiexie",
+      "感谢",
+      "多谢",
+      "比心"
+    ]
+  },
+  {
+    "id": "06",
+    "name": "好耶",
+    "filename": "06-好耶.webp",
+    "path": "assets/presets/default/06-好耶.webp",
+    "tag": "[表情: 好耶]",
+    "keywords": [
+      "yay",
+      "yeah",
+      "hooray",
+      "haoye",
+      "太棒了",
+      "欢呼",
+      "耶"
+    ]
+  },
+  {
+    "id": "07",
+    "name": "疑惑",
+    "filename": "07-疑惑.webp",
+    "path": "assets/presets/default/07-疑惑.webp",
+    "tag": "[表情: 疑惑]",
+    "keywords": [
+      "confused",
+      "question",
+      "what",
+      "yihuo",
+      "问号",
+      "不懂",
+      "迷惑",
+      "?"
+    ]
+  },
+  {
+    "id": "08",
+    "name": "震惊",
+    "filename": "08-震惊.webp",
+    "path": "assets/presets/default/08-震惊.webp",
+    "tag": "[表情: 震惊]",
+    "keywords": [
+      "shocked",
+      "wow",
+      "omg",
+      "zhenjing",
+      "惊讶",
+      "吃惊",
+      "吓到"
+    ]
+  },
+  {
+    "id": "09",
+    "name": "哭哭",
+    "filename": "09-哭哭.webp",
+    "path": "assets/presets/default/09-哭哭.webp",
+    "tag": "[表情: 哭哭]",
+    "keywords": [
+      "cry",
+      "sad",
+      "tears",
+      "kuku",
+      "大哭",
+      "难过",
+      "伤心",
+      "泪"
+    ]
+  },
+  {
+    "id": "10",
+    "name": "委屈",
+    "filename": "10-委屈.webp",
+    "path": "assets/presets/default/10-委屈.webp",
+    "tag": "[表情: 委屈]",
+    "keywords": [
+      "grieved",
+      "pout",
+      "weiqu",
+      "可怜",
+      "眼泪汪汪",
+      "受委屈"
+    ]
+  },
+  {
+    "id": "11",
+    "name": "生气",
+    "filename": "11-生气.webp",
+    "path": "assets/presets/default/11-生气.webp",
+    "tag": "[表情: 生气]",
+    "keywords": [
+      "angry",
+      "mad",
+      "shengqi",
+      "哼",
+      "气鼓鼓",
+      "愤怒"
+    ]
+  },
+  {
+    "id": "12",
+    "name": "害羞",
+    "filename": "12-害羞.webp",
+    "path": "assets/presets/default/12-害羞.webp",
+    "tag": "[表情: 害羞]",
+    "keywords": [
+      "shy",
+      "blush",
+      "haixiu",
+      "脸红",
+      "不好意思",
+      "娇羞"
+    ]
+  },
+  {
+    "id": "13",
+    "name": "偷笑",
+    "filename": "13-偷笑.webp",
+    "path": "assets/presets/default/13-偷笑.webp",
+    "tag": "[表情: 偷笑]",
+    "keywords": [
+      "snicker",
+      "giggle",
+      "hehe",
+      "touxiao",
+      "捂嘴笑",
+      "坏笑",
+      "嘿嘿"
+    ]
+  },
+  {
+    "id": "14",
+    "name": "得意",
+    "filename": "14-得意.webp",
+    "path": "assets/presets/default/14-得意.webp",
+    "tag": "[表情: 得意]",
+    "keywords": [
+      "smug",
+      "proud",
+      "deyi",
+      "骄傲",
+      "叉腰",
+      "厉害吧",
+      "哼哼"
+    ]
+  },
+  {
+    "id": "15",
+    "name": "摸鱼",
+    "filename": "15-摸鱼.webp",
+    "path": "assets/presets/default/15-摸鱼.webp",
+    "tag": "[表情: 摸鱼]",
+    "keywords": [
+      "slack",
+      "fish",
+      "chill",
+      "moyu",
+      "偷懒",
+      "划水",
+      "带薪摸鱼"
+    ]
+  },
+  {
+    "id": "16",
+    "name": "加油",
+    "filename": "16-加油.webp",
+    "path": "assets/presets/default/16-加油.webp",
+    "tag": "[表情: 加油]",
+    "keywords": [
+      "fighting",
+      "cheer",
+      "go",
+      "jiayou",
+      "打气",
+      "冲鸭",
+      "奥利给"
+    ]
+  },
+  {
+    "id": "17",
+    "name": "抱抱",
+    "filename": "17-抱抱.webp",
+    "path": "assets/presets/default/17-抱抱.webp",
+    "tag": "[表情: 抱抱]",
+    "keywords": [
+      "hug",
+      "cuddle",
+      "baobao",
+      "贴贴",
+      "安慰",
+      "拥抱"
+    ]
+  },
+  {
+    "id": "18",
+    "name": "点赞",
+    "filename": "18-点赞.webp",
+    "path": "assets/presets/default/18-点赞.webp",
+    "tag": "[表情: 点赞]",
+    "keywords": [
+      "like",
+      "thumbs up",
+      "nice",
+      "good",
+      "dianzan",
+      "赞",
+      "牛",
+      "棒"
+    ]
+  },
+  {
+    "id": "19",
+    "name": "无语",
+    "filename": "19-无语.webp",
+    "path": "assets/presets/default/19-无语.webp",
+    "tag": "[表情: 无语]",
+    "keywords": [
+      "speechless",
+      "awkward",
+      "wuyu",
+      "流汗",
+      "麻了",
+      "沉默",
+      "..."
+    ]
+  },
+  {
+    "id": "20",
+    "name": "饿饿",
+    "filename": "20-饿饿.webp",
+    "path": "assets/presets/default/20-饿饿.webp",
+    "tag": "[表情: 饿饿]",
+    "keywords": [
+      "hungry",
+      "food",
+      "eat",
+      "ee",
+      "想吃",
+      "小鱼干",
+      "投喂",
+      "饭饭"
+    ]
+  },
+  {
+    "id": "21",
+    "name": "困困",
+    "filename": "21-困困.webp",
+    "path": "assets/presets/default/21-困困.webp",
+    "tag": "[表情: 困困]",
+    "keywords": [
+      "sleepy",
+      "tired",
+      "zzz",
+      "kunkun",
+      "打盹",
+      "好困",
+      "想睡"
+    ]
+  },
+  {
+    "id": "22",
+    "name": "再见",
+    "filename": "22-再见.webp",
+    "path": "assets/presets/default/22-再见.webp",
+    "tag": "[表情: 再见]",
+    "keywords": [
+      "bye",
+      "goodbye",
+      "see you",
+      "zaijian",
+      "拜拜",
+      "挥手",
+      "溜了"
+    ]
+  },
+  {
+    "id": "23",
+    "name": "哈气",
+    "filename": "23-哈气.webp",
+    "path": "assets/presets/default/23-哈气.webp",
+    "tag": "[表情: 哈气]",
+    "keywords": [
+      "hiss",
+      "cat",
+      "angry",
+      "haqi",
+      "炸毛",
+      "凶",
+      "哈",
+      "极其猫",
+      "美国豆包"
+    ]
+  }
+]
