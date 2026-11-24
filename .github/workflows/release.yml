@@ -46,6 +46,9 @@ jobs:
             exit 1
           fi
 
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Resolve release version and tag
         shell: bash
         run: |
@@ -61,12 +64,14 @@ jobs:
             fi
             TAG="v${VERSION}"
           fi
+          if [ -z "$VERSION" ]; then
+            echo "::error::Resolved VERSION is empty."
+            exit 1
+          fi
+          echo "Resolved release version=${VERSION}, tag=${TAG}"
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
           echo "TAG=${TAG}" >> "$GITHUB_ENV"
-          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version=process.env.VERSION;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          VERSION="$VERSION" node -e "const fs=require('fs');const v=process.env.VERSION;if(!v)throw new Error('VERSION is empty');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version=v;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
 
       - name: Build & zip Chrome, build Firefox, test, and lint
         run: |
@@ -74,6 +79,7 @@ jobs:
           pnpm build:firefox
           pnpm test
           pnpm lint:firefox
+          VERSION="$VERSION" node -e "const fs=require('fs');for(const f of ['.output/chrome-mv3/manifest.json','.output/firefox-mv2/manifest.json']){const m=JSON.parse(fs.readFileSync(f,'utf8'));if(m.version!==process.env.VERSION)throw new Error(f+' version mismatch: '+m.version+' !== '+process.env.VERSION);}"
 
       - name: Sign Firefox extension & stage release assets
         env:
@@ -85,6 +91,7 @@ jobs:
 
           CHROME_ZIP=".output/gemini-meme-picker-${VERSION}-chrome.zip"
           if [ ! -f "$CHROME_ZIP" ]; then
+            ls -la .output
             echo "::error::Expected Chrome zip not found: $CHROME_ZIP"
             exit 1
           fi
